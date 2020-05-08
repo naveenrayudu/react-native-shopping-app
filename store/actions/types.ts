@@ -1,0 +1,6 @@
+export const ADD_TO_CART = 'ADD_TO_CART';
+export const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
+export const ADD_CART_TO_ORDER = 'ADD_CART_TO_ORDER';
+export const DELETE_PRODUCT = 'DELETE_PRODUCT';
+export const ADD_NEW_PRODUCT = 'ADD_NEW_PRODUCT';
+export const EDIT_PRODUCT = 'EDIT_PRODUCT';
