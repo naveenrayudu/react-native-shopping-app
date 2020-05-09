@@ -7,18 +7,22 @@ import colors from '../../constants/colors'
 import Product from '../../models/product'
 import {deleteProductAction} from '../../store/actions/products'
 import { IStackNavigationProp } from '../../models/navigation'
+import useThunkDispatch from '../../components/hooks/useThunkDispatch'
 
 const UserProductsScreen: React.FC<{
     navigation: IStackNavigationProp
 }> = ({navigation}) => {
     const userProducts = useSelector((state: IRootState) => state.products.userProducts);
-    const dispatch = useDispatch();
+    const dispatch = useThunkDispatch();
 
     const deleteProduct = (product: Product) => {
         Alert.alert('Are you sure?', 'Do you want to delete this product', 
         [
             {text: 'No', style:'default'},
-            {text: 'Yes', style: 'destructive', onPress: () => dispatch(deleteProductAction(product))}
+            {text: 'Yes', style: 'destructive', onPress: () => {
+                dispatch(deleteProductAction(product))
+                .catch(() => Alert.alert("Error occured", "Error occured while deleting the product"))
+            }}
         ]);
     }
 

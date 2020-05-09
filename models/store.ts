@@ -19,7 +19,8 @@ export interface ICartState {
     items: {
         [id: string]: CartItem
     },
-    totalPrice: number
+    totalPrice: number,
+    date: Date
 }
 
 export interface IOrderState {

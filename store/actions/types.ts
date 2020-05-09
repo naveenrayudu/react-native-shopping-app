@@ -4,3 +4,5 @@ export const ADD_CART_TO_ORDER = 'ADD_CART_TO_ORDER';
 export const DELETE_PRODUCT = 'DELETE_PRODUCT';
 export const ADD_NEW_PRODUCT = 'ADD_NEW_PRODUCT';
 export const EDIT_PRODUCT = 'EDIT_PRODUCT';
+export const SET_PRODUCTS = 'SET_PRODUCTS';
+export const SET_ORDERS = 'SET_ORDERS';

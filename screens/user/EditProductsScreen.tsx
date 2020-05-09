@@ -9,8 +9,11 @@ import CustomHeaderButton from '../../components/ui/CustomHeaderButton';
 import { addNewProductAction, editProductAction } from '../../store/actions/products';
 import InputControl from '../../components/common/InputControl';
 import { IEditProductScreenState, initialFormState, IEditProductScreenInputValues } from '../../models/editProductScreen';
+import useThunkDispatch from '../../components/hooks/useThunkDispatch';
 
 
+
+// const useThunkDispatch = () => useDispatch<typeof store.dispatch>();
 
 const createEmptyProduct = (): Product => {
     return new Product('', '', '', '', '', 0.00);
@@ -26,7 +29,7 @@ type Update_Payload = {
    isValid: boolean
 }
 
-type productInfoKeys = keyof IEditProductScreenInputValues
+type productInfoKeys = keyof IEditProductScreenInputValues;
 
 const reducer = (state: IEditProductScreenState, action: IDefaultAction<any>): IEditProductScreenState => {
     switch (action.type) {
@@ -120,10 +123,9 @@ const EditProductsScreen: React.FC<{
     const priceRef = useRef<TextInput>(null);
     const descriptionRef = useRef<TextInput>(null);
 
-    const dispatch = useDispatch();
+    const dispatch = useThunkDispatch();
 
     const saveProduct = useCallback(() => {
-
         if(!state.formValidity.isSubmitted) {
             dispactReactAction({type: FORM_SUBMITTED, payload: null});
         }
@@ -148,14 +150,24 @@ const EditProductsScreen: React.FC<{
                                         parseFloat(state.inputValues.price)
                                         )
 
+        
         if (!productInfo.id) {
-            dispatch(addNewProductAction(productInfo));
+            dispatch(addNewProductAction(productInfo))
+            .then(() => {
+                navigation.navigate('UserProducts');
+            }).catch(() => {
+                Alert.alert('Error Occured', 'Error occured while adding the product')
+            })
         } else {
-            dispatch(editProductAction(productInfo));
+            dispatch(editProductAction(productInfo))
+            .then(() => {
+                navigation.navigate('UserProducts');
+            }).catch(() => {
+                Alert.alert('Error Occured', 'Error occured while saving the product')
+            })
         }
 
-        navigation.navigate('UserProducts');
-
+       
     }, [state]);
 
     React.useLayoutEffect(() => {

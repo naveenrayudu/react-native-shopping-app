@@ -4,12 +4,13 @@ import {
   DELETE_PRODUCT,
   ADD_NEW_PRODUCT,
   EDIT_PRODUCT,
+  SET_PRODUCTS,
 } from "../actions/types";
 import Product from "../../models/product";
 
 const initialState: IProductsState = {
-  availableProducts: ProductsData,
-  userProducts: ProductsData.filter((t) => t.ownerId === "u1"),
+  availableProducts: [],
+  userProducts: [],
 };
 
 const ProductsReducer = (
@@ -17,6 +18,12 @@ const ProductsReducer = (
   action: IDefaultAction<any>
 ): IProductsState => {
   switch (action.type) {
+    case SET_PRODUCTS: 
+      return {
+        availableProducts: action.payload,
+        userProducts: action.payload.filter((t: Product) => t.ownerId === "u1")
+      };
+
     case DELETE_PRODUCT:
       const productToDelete = action.payload as Product;
 

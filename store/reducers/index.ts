@@ -1,8 +1,10 @@
-import {combineReducers, Reducer, CombinedState, createStore} from 'redux';
+import {combineReducers, Reducer, CombinedState, createStore, compose, applyMiddleware} from 'redux';
 import ProductsReducer from './products';
 import {  IDefaultAction, IRootState } from '../../models/store';
 import cartReducer from './cart';
 import orderReducer from './orders';
+import thunk from 'redux-thunk';
+
 
 type rootReducerType =  Reducer<CombinedState<IRootState>, IDefaultAction<any>>
 
@@ -11,7 +13,10 @@ const rootReducer: rootReducerType = combineReducers({
     cart: cartReducer,
     orders: orderReducer
 })
+// const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers = compose;
+const middleware = composeEnhancers(applyMiddleware(thunk))
 
-const store = createStore(rootReducer, (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__());
+const store = createStore(rootReducer, middleware);
 
 export default store;
