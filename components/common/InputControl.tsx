@@ -15,9 +15,11 @@ interface IProps extends TextInputProps {
 const InputControl: React.FC<IProps> = React.forwardRef((props, ref: any) => {
     const {label, style={}, forceShow = false, isValid = true, errorMessage = '', onBlur, ...rest} = props;
     const [isTouched, setIsTouched] = useState(false);
+    const [isFocussed, setIsFocussed] = useState(false);
 
     const onBlurHandler = (e: any) => {
         setIsTouched(true);
+        setIsFocussed(false);
         if(onBlur) {
             onBlur(e)
         }
@@ -28,11 +30,12 @@ const InputControl: React.FC<IProps> = React.forwardRef((props, ref: any) => {
             <Text style={styles.label}>{label}</Text>
             <TextInput
                 ref = {ref}
+                onFocus={() => setIsFocussed(true)}
                 style={{ ...styles.input, ...style }}
                 onBlur={onBlurHandler}
                 {...rest}
             />
-            {(isTouched || forceShow) && !!errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
+            {((isTouched && !isFocussed)|| forceShow) && !!errorMessage && <Text style={styles.error}>{errorMessage}</Text>}
         </View>
     )
 })

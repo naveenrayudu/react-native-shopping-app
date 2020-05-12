@@ -5,7 +5,8 @@ import CartItem from "../../models/cartItem";
 
 const initialState: ICartState = {
     items: {},
-    totalPrice: 0
+    totalPrice: 0,
+    date: new Date()
 }
 
 const cartReducer = (state = initialState, action: IDefaultAction<any>): ICartState => {

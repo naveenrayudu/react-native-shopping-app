@@ -7,7 +7,8 @@ import Order from './order';
 export interface IRootState {
     products: IProductsState,
     cart: ICartState,
-    orders: IOrderState
+    orders: IOrderState,
+    auth: IAuthState
 }
 
 export interface IProductsState {
@@ -25,6 +26,19 @@ export interface ICartState {
 
 export interface IOrderState {
     orders: Order[]
+}
+
+export interface IAuthState extends IGoogleAuth {
+    isLoggedIn: boolean
+}
+
+export interface IGoogleAuth {
+    idToken: string;
+    email: string;
+    refreshToken: string;
+    expiresIn: string;
+    localId: string;
+    registered?: boolean
 }
 
 export interface IDefaultAction<T> {

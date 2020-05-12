@@ -1,76 +1,18 @@
-import React, { useCallback, useState, useEffect, useRef, useReducer } from 'react'
-import { View, Text, ScrollView, StyleSheet, TextInput, Alert, KeyboardAvoidingView, Platform, SafeAreaView, NativeSyntheticEvent, TextInputFocusEventData, UIManager, findNodeHandle, TargetedEvent } from 'react-native'
+import React, { useCallback,  useEffect, useRef, useReducer } from 'react'
+import { View, ScrollView, StyleSheet, TextInput, Alert, KeyboardAvoidingView, Platform, SafeAreaView, NativeSyntheticEvent, TextInputFocusEventData, UIManager, findNodeHandle, TargetedEvent } from 'react-native'
 import { IRouteProp, IStackNavigationProp } from '../../models/navigation'
-import { useDispatch, useSelector } from 'react-redux';
-import { IRootState, IDefaultAction } from '../../models/store';
+import {  useSelector } from 'react-redux';
+import { IRootState } from '../../models/store';
 import Product from '../../models/product';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../../components/ui/CustomHeaderButton';
 import { addNewProductAction, editProductAction } from '../../store/actions/products';
 import InputControl from '../../components/common/InputControl';
-import { IEditProductScreenState, initialFormState, IEditProductScreenInputValues } from '../../models/editProductScreen';
+import { initialFormState, IEditProductScreenState } from '../../models/editProductScreen';
 import useThunkDispatch from '../../components/hooks/useThunkDispatch';
+import { UseFormReducer, INITIAL_STATE, FORM_SUBMITTED } from '../../helpers/useFormHandler';
 
 
-
-// const useThunkDispatch = () => useDispatch<typeof store.dispatch>();
-
-const createEmptyProduct = (): Product => {
-    return new Product('', '', '', '', '', 0.00);
-}
-
-const INITIAL_STATE = 'INITIAL_STATE';
-const UPDATE_FIELD_VALUE = 'UPDATE_FIELD_VALUE';
-const FORM_SUBMITTED = 'FORM_SUBMITTED';
-
-type Update_Payload = {
-    inputName: string,
-   value: string,
-   isValid: boolean
-}
-
-type productInfoKeys = keyof IEditProductScreenInputValues;
-
-const reducer = (state: IEditProductScreenState, action: IDefaultAction<any>): IEditProductScreenState => {
-    switch (action.type) {
-        case UPDATE_FIELD_VALUE:
-            const updatePayload =  action.payload as Update_Payload;
-            const inputValues = {...state.inputValues};
-            const inputValidities = {...state.inputValidities};
-            const formValidities = {...state.formValidity};
-            const inputName = updatePayload.inputName as productInfoKeys
-
-            inputValues[inputName] = updatePayload.value;
-            inputValidities[inputName] = updatePayload.isValid;
-
-            formValidities.isDirty = true;
-            formValidities.isTouched = true;
-            formValidities.isValid = Object.keys(inputValidities).some((key)=> inputValidities[key as productInfoKeys])
-
-
-            return {
-                ...state,
-                formValidity: formValidities,
-                inputValidities: inputValidities,
-                inputValues: inputValues
-            }
-
-        case INITIAL_STATE:
-            return {
-                ...state,
-                ...action.payload
-            }
-
-        case FORM_SUBMITTED:
-            return {...state, formValidity: {
-                ...state.formValidity,
-                isSubmitted: true
-            }}
-
-        default:
-            return state;
-    }
-}
 
 const EditProductsScreen: React.FC<{
     route: IRouteProp,
@@ -78,7 +20,7 @@ const EditProductsScreen: React.FC<{
 }> = ({ route, navigation }) => {
     const productId = route.params?.productId;
     const productToEdit = useSelector((state: IRootState) => state.products.userProducts.find(t => t.id === productId));
-    const [state, dispactReactAction] = useReducer(reducer, initialFormState)
+    const {state, formInputChangeHandler, dispactReactAction} = UseFormReducer<IEditProductScreenState>(initialFormState);
 
     useEffect(() => {
         const formValidity = {...initialFormState.formValidity};
@@ -183,17 +125,6 @@ const EditProductsScreen: React.FC<{
             }
         })
     }, [navigation, saveProduct])
-
-    const updateFormInput = useCallback((value: string, inputName: string) => {
-       dispactReactAction({
-           type: UPDATE_FIELD_VALUE,
-           payload: {
-               inputName,
-               value,
-               isValid: !!inputName
-           }
-       })
-    }, []);
  
     const onFocusHandler = useCallback((e: NativeSyntheticEvent<TargetedEvent>) => {
        const handle = findNodeHandle(e.currentTarget);
@@ -220,7 +151,7 @@ const EditProductsScreen: React.FC<{
                     <InputControl
                         label='Title'
                         value={state.inputValues.title}
-                        onChangeText={(value) => updateFormInput(value, 'title')}
+                        onChangeText={(value) => formInputChangeHandler(value, 'title')}
                         autoCapitalize='sentences'
                         autoCorrect
                         autoFocus
@@ -234,7 +165,7 @@ const EditProductsScreen: React.FC<{
                         label='Price'
                         keyboardType='decimal-pad'
                         value={state.inputValues.price}
-                        onChangeText={(value) => updateFormInput(value, 'price')}
+                        onChangeText={(value) => formInputChangeHandler(value, 'price')}
                         ref={priceRef}
                         returnKeyType='done'
                         returnKeyLabel='next'
@@ -248,7 +179,7 @@ const EditProductsScreen: React.FC<{
                         label='Image URL'
                         ref={imageRef}
                         value={state.inputValues.image}
-                        onChangeText={(value) => updateFormInput(value, 'image')}
+                        onChangeText={(value) => formInputChangeHandler(value, 'image')}
                         returnKeyType="next"
                         onFocus={onFocusHandler}
                         forceShow={state.formValidity.isSubmitted}
@@ -266,7 +197,7 @@ const EditProductsScreen: React.FC<{
                         onFocus={onFocusHandler}
                         forceShow={state.formValidity.isSubmitted}
                         errorMessage= {!state.inputValidities.description ? 'Description is required': ''}
-                        onChangeText={(value) => updateFormInput(value, 'description')} />
+                        onChangeText={(value) => formInputChangeHandler(value, 'description')} />
 
                 </View>
             </ScrollView>

@@ -1,18 +1,13 @@
-import { IFieldProps } from "./form";
+import { IFieldProps, IFormValidity, IValuesType, IValidityType } from "./form";
 
 export interface IEditProductScreenState {
     inputValues: IEditProductScreenInputValues,
     inputValidities: IEditProductScreenInputValidities,
-    formValidity: {
-        isTouched: boolean,
-        isDirty: boolean,
-        isValid: boolean,
-        isSubmitted: boolean
-    }
+    formValidity: IFormValidity
 }
 
-export interface IEditProductScreenInputValues {
-    productId: string,
+export interface IEditProductScreenInputValues extends IValuesType {
+    productId: string;
     ownerId: string;
     title: string;
     image: string; 
@@ -21,7 +16,7 @@ export interface IEditProductScreenInputValues {
 }
 
 
-export interface IEditProductScreenInputValidities {
+export interface IEditProductScreenInputValidities extends IValidityType {
     productId: boolean,
     ownerId: boolean;
     title: boolean;

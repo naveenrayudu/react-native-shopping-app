@@ -14,8 +14,8 @@ const convertCartToOrder = (cart: ICartState, id: string) => {
     return new Order(id, cartItems, cart.totalPrice, cart.date);
 }
 
-export const addCartToOrderAction = (cart: ICartState): AppThunk => async (dispatch: Dispatch<IDefaultAction<Order>>): Promise<any> => {
-    return API.post('orders.json', cart)
+export const addCartToOrderAction = (cart: ICartState): AppThunk => async (dispatch: Dispatch<IDefaultAction<Order>>, getState): Promise<any> => {
+    return API.post(`orders/${getState().auth.localId}.json`, cart)
         .then((response) => {
             return dispatch({
                 type: ADD_CART_TO_ORDER,
@@ -24,21 +24,22 @@ export const addCartToOrderAction = (cart: ICartState): AppThunk => async (dispa
         })
         .catch((err) => {
             console.log(err);
+            throw new Error(err);
         })
 }
 
 
-export const getOrdersAction = (): AppThunk => async (dispatch: Dispatch<IDefaultAction<Order[]>>): Promise<any> => {
-    API.get<ICartState>('orders.json')
+export const getOrdersAction = (): AppThunk => async (dispatch: Dispatch<IDefaultAction<Order[]>>, getState): Promise<any> => {
+    return API.get<ICartState>(`orders/${getState().auth.localId}.json`)
         .then((response) => {
-            const orders: Order[] = Object.keys(response).map(key => convertCartToOrder(response[key], key));
+            const orders: Order[] = Object.keys(response || {}).map(key => convertCartToOrder(response[key], key));
             return dispatch({
                 type: SET_ORDERS,
                 payload: orders
             })
         })
-        .catch(() => {
-
+        .catch((err) => {
+            throw new Error(err)
         })
 }
 

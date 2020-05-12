@@ -20,8 +20,8 @@ const ProductsReducer = (
   switch (action.type) {
     case SET_PRODUCTS: 
       return {
-        availableProducts: action.payload,
-        userProducts: action.payload.filter((t: Product) => t.ownerId === "u1")
+        availableProducts: action.payload.products,
+        userProducts: action.payload.userProducts
       };
 
     case DELETE_PRODUCT:

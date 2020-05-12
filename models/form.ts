@@ -8,3 +8,19 @@ export interface IFieldProps {
         isDirty: boolean
     }
 }
+
+export interface IValuesType {
+    [key: string]: string
+}
+
+export interface IValidityType {
+    [key: string]: boolean
+}
+
+
+export interface IFormValidity {
+    isTouched: boolean,
+    isDirty: boolean,
+    isValid: boolean,
+    isSubmitted: boolean
+}

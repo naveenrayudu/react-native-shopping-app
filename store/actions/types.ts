@@ -6,3 +6,7 @@ export const ADD_NEW_PRODUCT = 'ADD_NEW_PRODUCT';
 export const EDIT_PRODUCT = 'EDIT_PRODUCT';
 export const SET_PRODUCTS = 'SET_PRODUCTS';
 export const SET_ORDERS = 'SET_ORDERS';
+export const SIGN_UP_USER = 'SIGN_UP_USER';
+export const SIGN_IN_USER = 'SIGN_IN_USER';
+export const SIGN_OUT_USER = 'SIGN_OUT_USER';
+export const REFRESH_USER_TOKEN = 'REFRESH_USER_TOKEN';

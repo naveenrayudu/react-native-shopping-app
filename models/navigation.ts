@@ -10,7 +10,8 @@ export type IRootStackParamList = {
   EditProducts: {
     productId?: string,
     onProductSave?: () => void
-  }
+  },
+  Auth: undefined
 };
 
 
